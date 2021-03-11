@@ -72,55 +72,54 @@ defmodule CommentGraphql.GraphQL.Schema do
 
   mutation do
 
-    # field :update_reply, :result do
+    field :update_reply, :result do
 
-    #   arg :reply, non_null(:string)
-    #   arg :isdeletedbyadmin, :boolean
-    #   arg :userid, :integer
-    #   arg :replyid, :integer
-    #   arg :postid, :integer
-    #   arg :status, :integer
-    #   arg :likecount, :integer
-    #   arg :userlikes, :integer
-    #   arg :commentid, :integer
+      arg :reply, non_null(:string)
+      arg :isdeletedbyadmin, :boolean
+      arg :userid, :integer
+      arg :replyid, :integer
+      arg :postid, :integer
+      arg :status, :integer
+      arg :likecount, :integer
+      arg :userlikes, :integer
+      arg :commentid, :integer
 
 
-    #   resolve fn(%{reply: reply, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
+      resolve fn(%{reply: reply, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
 
-    #     reply_update = ImpowerElixir.HandleDb.update_reply_in_table(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
-    #     case reply_update do
-    #       {:ok, _} ->
-    #         {:ok, %{success: true}}
-    #       {:error , _} ->
-    #         {:ok, %{success: false}}
-    #     end
-    #   end
-    # end
+        reply_update = CommentGraphql.Client.update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
+        case reply_update do
+          {:ok, _} ->
+            {:ok, %{success: true}}
+          {:error , _} ->
+            {:ok, %{success: false}}
+        end
+      end
+    end
 
-    # field :create_reply, :result do
+    field :create_reply, :result do
 
-    #   arg :isdeletedbyadmin, :boolean
-    #   arg :userid, :integer
-    #   arg :reply, non_null(:string)
-    #   arg :replyid , :integer
-    #   arg :postid, :integer
-    #   arg :status, :integer
-    #   arg :likecount, :integer
-    #   arg :userlikes, :integer
-    #   arg :commentid, :integer
+      arg :isdeletedbyadmin, :boolean
+      arg :userid, :integer
+      arg :reply, non_null(:string)
+      arg :replyid , :integer
+      arg :postid, :integer
+      arg :status, :integer
+      arg :likecount, :integer
+      arg :userlikes, :integer
+      arg :commentid, :integer
 
-    #   resolve fn(%{isdeletedbyadmin: isdeletedbyadmin, userid: userid, reply: reply, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
+      resolve fn(%{isdeletedbyadmin: isdeletedbyadmin, userid: userid, reply: reply, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
 
-    #     reply = ImpowerElixir.HandleDb.create_replies_in_Table(isdeletedbyadmin, userid,  reply, replyid, postid, status, userlikes, likecount, commentid)
-
-    #     case reply do
-    #       {:ok, _} ->
-    #         {:ok, %{success: true}}
-    #       {:error , _} ->
-    #         {:ok, %{success: false}}
-    #     end
-    #   end
-    # end
+        reply = CommentGraphql.Client.create_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
+        case reply do
+          {:ok, _} ->
+            {:ok, %{success: true}}
+          {:error , _} ->
+            {:ok, %{success: false}}
+        end
+      end
+    end
 
     # field :get_repy_id, list_of(:get_replies) do
     #   arg :commentid, non_null(:integer)
@@ -147,21 +146,21 @@ defmodule CommentGraphql.GraphQL.Schema do
     #   end
     # end
 
-    # field :delete_reply, :result do
-    #   arg :replyid, non_null(:integer)
+    field :delete_reply, :result do
+      arg :replyid, non_null(:integer)
 
-    #   resolve fn(%{replyid: replyid}, _context) ->
+      resolve fn(%{replyid: replyid}, _context) ->
 
 
-    #     delete_replyid = ImpowerElixir.HandleDb.delete_reply_by_id(replyid)
-    #     case delete_replyid do
-    #       {1, nil} ->
-    #         {:ok, %{success: true}}
-    #       {1 , _} ->
-    #         {:ok, %{success: false}}
-    #     end
-    #   end
-    # end
+        delete_replyid = CommentGraphql.Client.delete_reply(replyid)
+        case delete_replyid do
+          {:ok, true} ->
+            {:ok, %{success: true}}
+          {:ok, false} ->
+            {:ok, %{success: false}}
+        end
+      end
+    end
 
     field :update_comment, :result do
 
@@ -188,21 +187,20 @@ defmodule CommentGraphql.GraphQL.Schema do
       end
     end
 
-    # field :delete_comment, :result do
-    #   arg :commentid, non_null(:integer)
+    field :delete_comment, :result do
+      arg :commentid, non_null(:integer)
 
-    #   resolve fn(%{commentid: commentid}, _context) ->
+      resolve fn(%{commentid: commentid}, _context) ->
 
-
-    #     delete_comment = ImpowerElixir.HandleDb.delete_comment_by_id(commentid)
-    #     case delete_comment do
-    #       {1, nil} ->
-    #         {:ok, %{success: true}}
-    #       {1 , _} ->
-    #         {:ok, %{success: false}}
-    #     end
-    #   end
-    # end
+        delete_comment = CommentGraphql.Client.delete_comment(commentid)
+        case delete_comment do
+          {:ok, true} ->
+            {:ok, %{success: true}}
+          {:ok, false} ->
+            {:ok, %{success: false}}
+        end
+      end
+    end
 
 
     field :get_comments_id, list_of(:get_comments) do

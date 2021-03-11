@@ -71,11 +71,52 @@ defmodule CommentGraphql.Client do
 
   defp build_request_update_comment(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid), do: {:ok, UpdateCommentRequest.new(comment: comment, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid)}
 
+  def delete_comment(commentid) do
+    with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
+         {:ok, %DeleteCommentRequest{} = request} <- build_request_delete_comment(commentid),
+         {:ok, %DeleteCommentResponse{status: status}} <-
+           Stub.delete_comment(channel, request) do
+      {:ok, status}
+    end
+  end
 
-
+  defp build_request_delete_comment( commentid), do: {:ok, DeleteCommentRequest.new(commentid: commentid)}
 
 
   ########################################### reply ##################################
+
+  def update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid) do
+    with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
+         {:ok, %UpdateReplyRequest{} = request} <- build_request_update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid),
+         {:ok, %UpdateReplyResponse{status: true}} <-
+           Stub.update_reply(channel, request) do
+      {:ok, reply}
+    end
+  end
+
+  defp build_request_update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid), do: {:ok, UpdateReplyRequest.new(reply: reply, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid)}
+
+  def create_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid) do
+    with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
+         {:ok, %CreateReplyRequest{} = request} <- build_request_create_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid),
+         {:ok, %CreateReplyResponse{reply: reply}} <-
+           Stub.create_reply(channel, request) do
+      {:ok, reply}
+    end
+  end
+
+  defp build_request_create_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid), do: {:ok, CreateReplyRequest.new(reply: reply, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid)}
+
+  def delete_reply(replyid) do
+    with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
+         {:ok, %DeleteReplyRequest{} = request} <- build_request_delete_reply( replyid),
+         {:ok, %DeleteReplyResponse{status: status}} <-
+           Stub.delete_reply(channel, request) do
+      {:ok, status}
+    end
+  end
+
+  defp build_request_delete_reply(replyid), do: {:ok, DeleteReplyRequest.new(replyid: replyid)}
 
 
 end
