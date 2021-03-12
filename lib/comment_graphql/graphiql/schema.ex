@@ -4,19 +4,6 @@ defmodule CommentGraphql.GraphQL.Schema do
 
   alias CommentGraphql.Client
 
-  # import Ecto.Query, warn: false
-
-  # alias ImpowerElixir.{
-  #   Users,
-  #   Repo,
-  #   HandleDb,
-  #   Token,
-  #   Comment,
-  #   Comments
-  # }
-
-
-
   object :result do
     field :success, :boolean
   end
@@ -48,19 +35,6 @@ defmodule CommentGraphql.GraphQL.Schema do
     field :userlikes, :integer
 
   end
-
-
-  # object :notifs do
-
-  #   field :description, :string
-  #   field :status, :boolean
-  #   field :sender, :string
-  #   field :seen_at, :string
-  #   field :receiver, :string
-  #   field :on_react, :string
-
-  # end
-
   query do
     field :get_comments, list_of(:get_comments) do
       resolve fn(_arg, _context) ->
