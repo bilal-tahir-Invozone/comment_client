@@ -4,6 +4,9 @@ defmodule CommentGraphql.GraphQL.Schema do
 
   alias CommentGraphql.Client
 
+
+
+
   object :result do
     field :success, :boolean
   end
@@ -35,6 +38,7 @@ defmodule CommentGraphql.GraphQL.Schema do
     field :userlikes, :integer
 
   end
+
   query do
     field :get_comments, list_of(:get_comments) do
       resolve fn(_arg, _context) ->
@@ -95,30 +99,16 @@ defmodule CommentGraphql.GraphQL.Schema do
       end
     end
 
-    # field :get_repy_id, list_of(:get_replies) do
-    #   arg :commentid, non_null(:integer)
+    field :get_repy_id, list_of(:get_replies) do
+      arg :commentid, non_null(:integer)
 
-    #   resolve fn(%{commentid: commentid}, _context) ->
+      resolve fn(%{commentid: commentid}, _context) ->
 
-    #     data = ImpowerElixir.HandleDb.get_replies_by_id(commentid)
-    #     case Kernel.length(data) do
-    #     0 ->
-    #       {:ok, %{
-    #         "commentid": nil,
-    #         "reply": "No reply",
-    #         "isdeletedbyadmin": nil,
-    #         "likecount": nil,
-    #         "postid": nil,
-    #         "replyid": nil,
-    #         "status": nil,
-    #         "userid": nil,
-    #         "userlikes": nil
-    #       }}
-    #     _ ->
-    #       {:ok, data}
-    #     end
-    #   end
-    # end
+        data = CommentGraphql.Client.get_reply(commentid)
+        {:ok, data}
+
+      end
+    end
 
     field :delete_reply, :result do
       arg :replyid, non_null(:integer)
@@ -183,24 +173,9 @@ defmodule CommentGraphql.GraphQL.Schema do
       resolve fn(%{postid: postid}, _context) ->
 
         data = CommentGraphql.Client.get_comment(postid)
-        # IO.puts "here is data in schema"
-        # IO.inspect data
-        # case Kernel.length(data) do
-        # 0 ->
-        #   {:ok, %{
-        #     "commentid": nil,
-        #     "comments": "No comments",
-        #     "isdeletedbyadmin": nil,
-        #     "likecount": nil,
-        #     "postid": nil,
-        #     "replyid": nil,
-        #     "status": nil,
-        #     "userid": nil,
-        #     "userlikes": nil
-        #   }}
-        # _ ->
+
         {:ok, data}
-        # end
+
       end
     end
 
@@ -223,8 +198,6 @@ defmodule CommentGraphql.GraphQL.Schema do
 
 
         comment = CommentGraphql.Client.create_comment(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
-        #ImpowerElixir.HandleDb.create_comments_in_Table(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
-
         case comment do
           {:ok, _} ->
             {:ok, %{success: true}}

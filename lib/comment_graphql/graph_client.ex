@@ -1,7 +1,7 @@
 
 defmodule CommentGraphql.Client do
 
-  alias Commentapi.Comment.Stub
+  alias Commentapi.CommentService.Stub
 
   # 5. alias proto generated modules that were going to use
   alias Commentapi.{
@@ -51,8 +51,8 @@ defmodule CommentGraphql.Client do
     with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
          {:ok, %GetCommentRequest{} = request} <- build_request_get_comment(postid),
          {:ok, %GetCommentResponse{comments: getting_comment}} <- Stub.get_comment(channel, request) do
-        IO.puts "here is result"
-        IO.inspect %GetCommentResponse{comments: getting_comment}
+
+         getting_comment
     end
   end
 
@@ -84,6 +84,17 @@ defmodule CommentGraphql.Client do
 
 
   ########################################### reply ##################################
+
+  def get_reply(commentid) do
+    with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
+         {:ok, %GetReplyRequest{} = request} <- build_request_get_reply(commentid),
+         {:ok, %GetReplyResponse{replies: reply}} <-
+           Stub.get_reply(channel, request) do
+      reply
+    end
+  end
+
+  defp build_request_get_reply(commentid), do: {:ok, GetReplyRequest.new(commentid: commentid)}
 
   def update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid) do
     with {:ok, channel} <- GRPC.Stub.connect(@server_repo_url),
