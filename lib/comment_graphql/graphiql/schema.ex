@@ -22,6 +22,7 @@ defmodule CommentGraphql.GraphQL.Schema do
     field :status, :integer
     field :userid, :integer
     field :userlikes, :integer
+    field :media_url, :string
 
   end
 
@@ -36,6 +37,7 @@ defmodule CommentGraphql.GraphQL.Schema do
     field :status, :integer
     field :userid, :integer
     field :userlikes, :integer
+    field :media_url, :string
 
   end
 
@@ -61,11 +63,12 @@ defmodule CommentGraphql.GraphQL.Schema do
       arg :likecount, :integer
       arg :userlikes, :integer
       arg :commentid, :integer
+      arg :media_url, :string
 
 
-      resolve fn(%{reply: reply, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
+      resolve fn(%{reply: reply, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid, media_url: media_url}, _context) ->
 
-        reply_update = CommentGraphql.Client.update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
+        reply_update = CommentGraphql.Client.update_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid, media_url)
         case reply_update do
           {:ok, _} ->
             {:ok, %{success: true}}
@@ -86,10 +89,11 @@ defmodule CommentGraphql.GraphQL.Schema do
       arg :likecount, :integer
       arg :userlikes, :integer
       arg :commentid, :integer
+      arg :media_url, :string
 
-      resolve fn(%{isdeletedbyadmin: isdeletedbyadmin, userid: userid, reply: reply, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
+      resolve fn(%{isdeletedbyadmin: isdeletedbyadmin, userid: userid, reply: reply, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid, media_url: media_url}, _context) ->
 
-        reply = CommentGraphql.Client.create_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
+        reply = CommentGraphql.Client.create_reply(reply, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid, media_url)
         case reply do
           {:ok, _} ->
             {:ok, %{success: true}}
@@ -137,11 +141,11 @@ defmodule CommentGraphql.GraphQL.Schema do
       arg :likecount, :integer
       arg :userlikes, :integer
       arg :commentid, :integer
+      arg :media_url, :string
 
+      resolve fn(%{comments: comment, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid, media_url: media_url}, _context) ->
 
-      resolve fn(%{comments: comment, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
-
-        comment_update = CommentGraphql.Client.update_comment(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
+        comment_update = CommentGraphql.Client.update_comment(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid, media_url)
         case comment_update do
           {:ok, _} ->
             {:ok, %{success: true}}
@@ -192,12 +196,11 @@ defmodule CommentGraphql.GraphQL.Schema do
       arg :likecount, :integer
       arg :userlikes, :integer
       arg :commentid, :integer
+      arg :media_url, :string
 
+      resolve fn(%{comments: comment, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid, media_url: media_url}, _context) ->
 
-      resolve fn(%{comments: comment, isdeletedbyadmin: isdeletedbyadmin, userid: userid, replyid: replyid, postid: postid, status: status, userlikes: userlikes, likecount: likecount, commentid: commentid}, _context) ->
-
-
-        comment = CommentGraphql.Client.create_comment(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid)
+        comment = CommentGraphql.Client.create_comment(comment, isdeletedbyadmin, userid,  replyid, postid, status, userlikes, likecount, commentid, media_url)
         case comment do
           {:ok, _} ->
             {:ok, %{success: true}}
